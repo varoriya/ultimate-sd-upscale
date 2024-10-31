@@ -1,32 +1,65 @@
-แยก action ได้ไหม
+name: Download Models and Push to Replicate
 
-name: Push to Replicate
- 
 on:
   workflow_dispatch:
     inputs:
       model_name:
         description: 'Enter the model name, like "alice/bunny-detector"'
         required: true
- 
+
 jobs:
+  download_models:
+    name: Download Models
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create directories
+        run: |
+          mkdir -p model-cache
+          mkdir -p controlnet-cache
+          mkdir -p upscaler-cache
+
+      - name: Download ryuzakimixrealistic_v10 model
+        run: |
+          curl -L -o model-cache/ryuzakimixrealistic_v10.safetensors https://huggingface.co/zenityx/magmix/resolve/main/ryuzakimixrealistic_v10.safetensors
+
+      - name: Download ControlNet model
+        run: |
+          curl -L -o controlnet-cache/control_v11f1e_sd15_tile.pth https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11f1e_sd15_tile.pth
+
+      - name: Download 4x-ultrasharp upscaler model
+        run: |
+          curl -L -o upscaler-cache/4x-ultrasharp.pth "https://civitai.com/api/download/models/125843?type=Model&format=PickleTensor"
+
+      - name: Commit and push models
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add -f model-cache/* controlnet-cache/* upscaler-cache/*
+          git commit -m "Add downloaded models"
+          git pull --rebase origin main
+          git push
+
   push_to_replicate:
     name: Push to Replicate
     runs-on: ubuntu-latest
+    needs: download_models  # รอให้การดาวน์โหลดโมเดลเสร็จก่อน
     steps:
-      - name: Free disk pace
+      - name: Free disk space
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
           tool-cache: false
           docker-images: false
- 
+
       - name: Checkout
         uses: actions/checkout@v4
- 
+
       - name: Setup Cog
         uses: replicate/setup-cog@v2
         with:
           token: ${{ secrets.REPLICATE_API_TOKEN }}
-        
+
       - name: Push to Replicate
         run: cog push r8.im/${{ inputs.model_name }}
