@@ -57,4 +57,6 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add -f model-cache/* controlnet-cache/* upscaler-cache/*
-          git commit -m "
+          git commit -m "Add downloaded model: ${{ inputs.file_to_download }}"
+          git pull --rebase origin main
+          git push
