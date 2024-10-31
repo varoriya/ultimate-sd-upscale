@@ -48,7 +48,7 @@
   },
   "4": {
     "inputs": {
-      "ckpt_name": "deliberate_v2.safetensors"
+      "ckpt_name": "ryuzakimixrealistic_v10.safetensors"
     },
     "class_type": "CheckpointLoaderSimple"
   },
