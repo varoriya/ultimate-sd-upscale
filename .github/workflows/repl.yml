@@ -1,7 +1,16 @@
-push_to_replicate:
+name: Push to Replicate
+
+on:
+  workflow_dispatch:
+    inputs:
+      model_name:
+        description: 'Enter the model name, like "alice/bunny-detector"'
+        required: true
+
+jobs:
+  push_to_replicate:
     name: Push to Replicate
     runs-on: ubuntu-latest
-    needs: download_models  # รอให้การดาวน์โหลดโมเดลเสร็จก่อน
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@v1.3.1
