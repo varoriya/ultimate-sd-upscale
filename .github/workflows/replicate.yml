@@ -21,21 +21,23 @@ jobs:
           mkdir -p controlnet-cache
           mkdir -p upscaler-cache
 
-      - name: Download ryuzakimixrealistic_v10 model
-        run: |
-          curl -L -o model-cache/ryuzakimixrealistic_v10.safetensors https://huggingface.co/zenityx/magmix/resolve/main/ryuzakimixrealistic_v10.safetensors
+    #  - name: Download ryuzakimixrealistic_v10 model
+    #    run: |
+    #      curl -L -o model-cache/ryuzakimixrealistic_v10.safetensors https://huggingface.co/zenityx/magmix/resolve/main/ryuzakimixrealistic_v10.safetensors
 
-      - name: Download ControlNet model
-        run: |
-          curl -L -o controlnet-cache/control_v11f1e_sd15_tile.pth https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11f1e_sd15_tile.pth
+    #  - name: Download ControlNet model
+    #    run: |
+    #      curl -L -o controlnet-cache/control_v11f1e_sd15_tile.pth https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11f1e_sd15_tile.pth
 
       - name: Download 4x-ultrasharp upscaler model
         run: |
           curl -L -o upscaler-cache/4x-ultrasharp.pth "https://civitai.com/api/download/models/125843?type=Model&format=PickleTensor"
       - name: Increase git buffer
         run: |
-          git config --global http.postBuffer 157286400  # ตั้ง buffer เป็น 150 MB
-          git config --global http.maxRequestBuffer 100M
+          git config --global http.postBuffer 524288000  # 500 MB
+          git config --global https.postBuffer 524288000  # 500 MB
+          git config --global core.compression 9
+
       - name: Commit and push models
         run: |
           git config user.name "github-actions"
