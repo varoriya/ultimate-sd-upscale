@@ -1,0 +1,53 @@
+name: Download Model and Push
+
+on:
+  workflow_dispatch:
+    inputs:
+      file_to_download:
+        description: 'Select the model to download'
+        required: true
+        default: '4x-ultrasharp'
+        type: choice
+        options:
+          - ryuzakimixrealistic_v10
+          - controlnet_tile
+          - 4x-ultrasharp
+
+jobs:
+  download_model:
+    name: Download Selected Model
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create directories
+        run: |
+          mkdir -p model-cache
+          mkdir -p controlnet-cache
+          mkdir -p upscaler-cache
+
+      - name: Download selected model
+        run: |
+          if [ "${{ inputs.file_to_download }}" = "ryuzakimixrealistic_v10" ]; then
+            curl -L -o model-cache/ryuzakimixrealistic_v10.safetensors https://huggingface.co/zenityx/magmix/resolve/main/ryuzakimixrealistic_v10.safetensors
+          elif [ "${{ inputs.file_to_download }}" = "controlnet_tile" ]; then
+            curl -L -o controlnet-cache/control_v11f1e_sd15_tile.pth https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11f1e_sd15_tile.pth
+          elif [ "${{ inputs.file_to_download }}" = "4x-ultrasharp" ]; then
+            curl -L -o upscaler-cache/4x-ultrasharp.pth "https://civitai.com/api/download/models/125843?type=Model&format=PickleTensor"
+          fi
+
+      - name: Increase git buffer
+        run: |
+          git config --global http.postBuffer 524288000  # 500 MB
+          git config --global https.postBuffer 524288000  # 500 MB
+          git config --global core.compression 9
+
+      - name: Commit and push models
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add -f model-cache/* controlnet-cache/* upscaler-cache/*
+          git commit -m "Add downloaded model: ${{ inputs.file_to_download }}"
+          git pull --rebase origin main
+          git push
