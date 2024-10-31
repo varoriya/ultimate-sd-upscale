@@ -32,7 +32,10 @@ jobs:
       - name: Download 4x-ultrasharp upscaler model
         run: |
           curl -L -o upscaler-cache/4x-ultrasharp.pth "https://civitai.com/api/download/models/125843?type=Model&format=PickleTensor"
-
+      - name: Increase git buffer
+        run: |
+          git config --global http.postBuffer 157286400  # ตั้ง buffer เป็น 150 MB
+          git config --global http.maxRequestBuffer 100M
       - name: Commit and push models
         run: |
           git config user.name "github-actions"
