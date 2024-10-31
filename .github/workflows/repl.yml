@@ -1,4 +1,3 @@
-
 push_to_replicate:
     name: Push to Replicate
     runs-on: ubuntu-latest
