@@ -1,4 +1,4 @@
-name: Download Model and Push
+name: Download sep Model and Push
 
 on:
   workflow_dispatch:
