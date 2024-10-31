@@ -208,7 +208,7 @@ class Predictor(BasePredictor):
         else:
             workflow["3"]["inputs"]["force_uniform_tiles"] = "disable"
 
-        workflow["4"]["inputs"]["ckpt_name"] = "deliberate_v2.safetensors"
+        workflow["4"]["inputs"]["ckpt_name"] = "ryuzakimixrealistic_v10.safetensors"
 
         workflow["6"]["inputs"]["text"] = positive_prompt
         workflow["7"]["inputs"]["text"] = negative_prompt
