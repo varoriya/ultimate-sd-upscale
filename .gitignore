@@ -1,7 +1,7 @@
 ComfyUI
 .cog
 __pycache__
-controlnet-cache/*
-model-cache/*
-upscaler-cache/*
+# controlnet-cache/*
+# model-cache/*
+# upscaler-cache/*
 !add*
